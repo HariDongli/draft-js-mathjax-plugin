@@ -62,6 +62,7 @@ const createMathjaxPlugin = (config = {}) => {
     myKeyBindingFn(getEditorState)(e)
 
   const blockRendererFn = (block) => {
+    console.log(block.getType() === 'atomic' && block.getData().get('mathjax'),"from block render function ")
     if (
       block.getType() === 'atomic' && block.getData().get('mathjax')
     ) {
@@ -126,12 +127,14 @@ const createMathjaxPlugin = (config = {}) => {
 
   return {
     initialize: ({ getEditorState, setEditorState, getReadOnly, setReadOnly, getEditorRef }) => {
+      
       store.getEditorState = getEditorState
       store.setEditorState = setEditorState
       store.getReadOnly = getReadOnly
       store.setReadOnly = setReadOnly
       store.getEditorRef = getEditorRef
-      store.completion = store.completion(getEditorState())
+      // if(typeof(store.completion)=="function")
+         store.completion = store.completion(getEditorState())
       // store.completion.mostUsedTeXCommands =
       //   getInitialMostUsedTeXCmds(getEditorState())
     },

@@ -103,6 +103,7 @@ export default class TeXBlock extends Component {
       )
 
     const style = styles[(editMode ? 'preview' : 'rendered')]
+    console.log(input, rendered, "texblock")
     return (
       <div
         style={{ position: editMode ?

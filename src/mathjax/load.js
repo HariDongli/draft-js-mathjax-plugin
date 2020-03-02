@@ -5,6 +5,7 @@ export default function load(src, cb) {
   script.type = 'text/javascript'
   script.async = true
   script.src = src
+  script.id="MathJax-script"
 
   if (cb) {
     script.onload = () => {

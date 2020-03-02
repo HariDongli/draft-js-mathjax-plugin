@@ -91,7 +91,7 @@ export default class InlineTeX extends Component {
     return { editMode: teX.length === 0, teX, displaystyle }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const store = this.props.getStore()
     if (this.state.editMode) {
       store.setReadOnly(true)
@@ -101,8 +101,7 @@ export default class InlineTeX extends Component {
   // componentWillUnmount() {
   //   console.log("unmount", this.props.entityKey);
   // }
-
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { entityKey } = nextProps
     const store = nextProps.getStore()
     const { key } = store.teXToUpdate
@@ -159,13 +158,13 @@ export default class InlineTeX extends Component {
 
     const style = styles[(editMode ? 'preview' : 'rendered')]
     return (
-      <span
+      <span 
         style={{ position: editMode ?
           'relative' : undefined,
         }}
       >
         {input}
-        <span
+        <span id="hello"
           onMouseDown={() => this._update()}
           style={style}
           contentEditable={false}

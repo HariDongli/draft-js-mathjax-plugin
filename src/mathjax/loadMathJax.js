@@ -2,9 +2,10 @@
 import load from './load'
 
 // mathjax cdn shutdown the 30/04/2017!!! https://cdn.mathjax.org/mathjax/latest/MathJax.js
-const DEFAULT_SCRIPT = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js'
+let DEFAULT_SCRIPT = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js'
 
-const DEFAULT_OPTIONS = {
+DEFAULT_SCRIPT = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+let DEFAULT_OPTIONS = {
   jax: ['input/TeX', 'output/CommonHTML'],
   TeX: {
     extensions: ['autoload-all.js'],
@@ -16,7 +17,17 @@ const DEFAULT_OPTIONS = {
   preview: 'none',
   delayStartupTypeset: true,
 }
+DEFAULT_OPTIONS = {
+  options: { 
+    ignoreHtmlClass: 'tex2jax_ignore',  
+},   
+tex: {
 
+inlineMath: [["$","$"],["\\{","\\}"]],
+displayMath: [["$","$"],["$","$"],["\\[","\\]"]],
+preview: "none"}
+
+}
 const loadMathJax = ({ macros: Macros, script, mathjaxConfig }) => {
   const config = {}
   config.script = script || DEFAULT_SCRIPT
@@ -28,15 +39,19 @@ const loadMathJax = ({ macros: Macros, script, mathjaxConfig }) => {
   config.options = Object.assign(config.options, { TeX })
 
   if (window.MathJax) {
-    window.MathJax.Hub.Config(config.options)
-    window.MathJax.Hub.processSectionDelay = 0
+    // window.MathJax = config.options;
+    // window.MathJax.Hub.Config(config.options)
+    // window.MathJax.Hub.processSectionDelay = 0
     return
   }
   load(config.script, (err) => {
     if (!err) {
-      window.MathJax.Hub.Config(config.options)
+     
+      // window.MathJax.Hub.Config(config.options);
+      // window.MathJax = config.options;
+      console.log("hello no error", window.MathJax)
       // avoid flickering of the preview
-      window.MathJax.Hub.processSectionDelay = 0
+      // window.MathJax.Hub.processSectionDelay = 0
     }
   })
 }

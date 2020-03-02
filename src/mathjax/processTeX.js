@@ -3,31 +3,32 @@ let pendingCallbacks = []
 let needsProcess = false
 
 function doProcess(MathJax) {
-  MathJax.Hub.Queue(() => {
-    const oldElementScripts = MathJax.Hub.elementScripts
-    // voir https://github.com/mathjax/MathJax/blob/master/unpacked/MathJax.js#L2445
-    MathJax.Hub.elementScripts = (/* element */) => pendingScripts
+  MathJax.typeset();
+  // MathJax.Hub.Queue(() => {
+  //   const oldElementScripts = MathJax.Hub.elementScripts
+  //   // voir https://github.com/mathjax/MathJax/blob/master/unpacked/MathJax.js#L2445
+  //   MathJax.Hub.elementScripts = (/* element */) => pendingScripts
 
-    try {
-      return MathJax.Hub.Process(null, () => {
-        // Trigger all of the pending callbacks before clearing them
-        // out.
-        pendingCallbacks.forEach(cb => cb())
-        // for (const callback of pendingCallbacks) {
-        //   callback()
-        // }
+  //   try {
+  //     return MathJax.Hub.Process(null, () => {
+  //       // Trigger all of the pending callbacks before clearing them
+  //       // out.
+  //       pendingCallbacks.forEach(cb => cb())
+  //       // for (const callback of pendingCallbacks) {
+  //       //   callback()
+  //       // }
 
-        pendingScripts = []
-        pendingCallbacks = []
-        needsProcess = false
-      })
-    } catch (e) {
-      // IE8 requires `catch` in order to use `finally`
-      throw e
-    } finally {
-      MathJax.Hub.elementScripts = oldElementScripts
-    }
-  })
+  //       pendingScripts = []
+  //       pendingCallbacks = []
+  //       needsProcess = false
+  //     })
+  //   } catch (e) {
+  //     // IE8 requires `catch` in order to use `finally`
+  //     throw e
+  //   } finally {
+  //     MathJax.Hub.elementScripts = oldElementScripts
+  //   }
+  // })
 }
 
 /**

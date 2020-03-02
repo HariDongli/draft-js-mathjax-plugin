@@ -16,8 +16,10 @@ class MathJaxNode extends Component {
     if (this.state.ready) this.typeset()
     else {
       const { check } = this.props
+      console.log("ELse -componentDidMount", check);
       this.annul = setInterval(() => {
-        if (window.MathJax && window.MathJax.isReady) {
+        //&& window.MathJax.isReady
+        if (window.MathJax ) {
           this.setState({ ready: true })
           clearInterval(this.annul)
         } else {
@@ -66,7 +68,7 @@ class MathJaxNode extends Component {
     if (!this.script) {
       this.script = document.createElement('script')
       this.script.type = `math/tex; ${inline ? '' : 'mode=display'}`
-      this.node.appendChild(this.script)
+      this.node && this.node.appendChild(this.script)
     }
 
     if ('text' in this.script) {
@@ -83,6 +85,7 @@ class MathJaxNode extends Component {
    * Clear the jax
    */
   clear() {
+    console.log("jax removal");
     const MathJax = window.MathJax
 
     if (!this.script || !MathJax || !MathJax.isReady) {
@@ -101,6 +104,7 @@ class MathJaxNode extends Component {
    */
   typeset(forceUpdate) {
     const MathJax = window.MathJax
+    console.log("Hello", this.script, forceUpdate)
     const { children, onRender } = this.props
 
     const text = children
@@ -110,29 +114,56 @@ class MathJaxNode extends Component {
     }
 
     if (!forceUpdate && this.script) {
-      MathJax.Hub.Queue(() => {
-        const jax = MathJax.Hub.getJaxFor(this.script)
-
-        if (jax) jax.Text(text, onRender)
-        else {
-          const script = this.setScriptText(text)
-          processTeX(MathJax, script, onRender)
+      // MathJax.typeset(()=>{
+      //   const script = this.setScriptText(text)
+      //       // processTeX(MathJax, script, onRender)
+      //   return script;
+      // });
+      MathJax.typesetPromise().then(val =>{
+        const script = this.setScriptText(text)
+        // let node = document.querySelector('#math');
+        let options = MathJax.getMetricsFor(script, true);
+        while (this.node.lastChild) {
+          this.node.removeChild(this.node.lastChild);
         }
+        // for math
+        // this.node.appendChild(( MathJax.tex2svg(text, options)));
+        //for only text 
+        this.node.innerHTML = text;
+        // console.log(html);
+        MathJax.typesetPromise();
       })
+      // end of new changes
+
+      // MathJax.Hub.Queue(() => {
+      //   const jax = MathJax.Hub.getJaxFor(this.script)
+
+      //   if (jax) jax.Text(text, onRender)
+      //   else {
+      //     const script = this.setScriptText(text)
+      //     processTeX(MathJax, script, onRender)
+      //   }
+      // })
     } else {
+
       const script = this.setScriptText(text)
-      MathJax.Hub.Queue(() =>
-        processTeX(MathJax, script, onRender),
-      )
+      // MathJax.Hub.Queue(() =>
+      //   processTeX(MathJax, script, onRender),
+      // )
+      // MathJax.typesetPromise().then(val=>{
+      //   console.log(val);
+      // })
+      MathJax.typeset()
     }
   }
 
 
   render() {
+    console.log(this.state.ready,"render of MathJaxNode", window.MathJax, this.props.children, this.node);
     if (this.state.ready) {
       return <span ref={(node) => { this.node = node }} />
     }
-    return <span style={{ color: 'red' }}>{this.props.children}</span>
+    return <span style={{ color: 'red' }}>{this.props.children}  </span>
   }
 
 }
